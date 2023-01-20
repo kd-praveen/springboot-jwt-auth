@@ -11,19 +11,26 @@ import com.security.jwt.dto.AuthenticationResponseDto;
 import com.security.jwt.dto.RegisterRequestDto;
 import com.security.jwt.service.AuthenticationService;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
-@RequestMapping("api/v1/auth")
+@RequestMapping("/api/v1/auth/")
+@RequiredArgsConstructor
 public class AuthenticationController {
 
-    private AuthenticationService authService;
+    private final AuthenticationService authService;
 
-    @PostMapping("/regsiter")
-    public ResponseEntity<AuthenticationResponseDto> register(@RequestBody RegisterRequestDto request) {
+    @PostMapping("regsiter")
+    public ResponseEntity<AuthenticationResponseDto> register(
+        @RequestBody RegisterRequestDto request
+    ) {
         return ResponseEntity.ok(authService.register(request));
     }
 
-    @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponseDto> authenticate(@RequestBody AuthenticationRequestDto request) {
+    @PostMapping("authenticate")
+    public ResponseEntity<AuthenticationResponseDto> authenticate(
+        @RequestBody AuthenticationRequestDto request
+    ) {
         return ResponseEntity.ok(authService.authenticate(request));
     }
 

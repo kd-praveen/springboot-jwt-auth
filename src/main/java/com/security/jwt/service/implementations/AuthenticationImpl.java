@@ -30,6 +30,8 @@ public class AuthenticationImpl implements AuthenticationService{
 
     @Override
     public AuthenticationResponseDto register(RegisterRequestDto request) {
+
+        System.out.println("Registering");
         var user = AppUser.builder()
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
