@@ -9,7 +9,7 @@ import com.security.jwt.config.JwtService;
 import com.security.jwt.dto.AuthenticationRequestDto;
 import com.security.jwt.dto.AuthenticationResponseDto;
 import com.security.jwt.dto.RegisterRequestDto;
-import com.security.jwt.models.AppUser;
+import com.security.jwt.models.User;
 import com.security.jwt.models.Role;
 import com.security.jwt.repository.UserRepository;
 import com.security.jwt.service.AuthenticationService;
@@ -32,7 +32,7 @@ public class AuthenticationImpl implements AuthenticationService{
     public AuthenticationResponseDto register(RegisterRequestDto request) {
 
         System.out.println("Registering");
-        var user = AppUser.builder()
+        var user = User.builder()
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
                 .email(request.getEmail())

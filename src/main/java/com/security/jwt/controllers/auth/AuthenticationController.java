@@ -14,24 +14,24 @@ import com.security.jwt.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/auth/")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
 
     private final AuthenticationService authService;
 
-    @PostMapping("regsiter")
+    @PostMapping("register")
     public ResponseEntity<AuthenticationResponseDto> register(
-        @RequestBody RegisterRequestDto request
+            @RequestBody RegisterRequestDto requestDto
     ) {
-        return ResponseEntity.ok(authService.register(request));
+        return ResponseEntity.ok(authService.register(requestDto));
     }
 
     @PostMapping("authenticate")
     public ResponseEntity<AuthenticationResponseDto> authenticate(
-        @RequestBody AuthenticationRequestDto request
+            @RequestBody AuthenticationRequestDto requestDto
     ) {
-        return ResponseEntity.ok(authService.authenticate(request));
+        return ResponseEntity.ok(authService.authenticate(requestDto));
     }
 
 }
