@@ -24,6 +24,10 @@ public class JwtService {
         return extractClaim(token, Claims::getSubject);
     }
 
+    public Date extractExpireTime(String token) {
+        return extractClaim(token, Claims::getExpiration);
+    }
+
     public String generateToken(UserDetails userDetails) {
         return generateToken(new HashMap<>(), userDetails);
     }
@@ -37,6 +41,24 @@ public class JwtService {
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public String generateRefreshToken(UserDetails userDetails) {
+        return generateRefreshToken(new HashMap<>(), userDetails);
+    }
+
+    public String generateRefreshToken(
+        Map<String, Object> extraClaims,
+        UserDetails userDetails
+    ) {
+        return Jwts
+                .builder()
+                .setClaims(extraClaims)
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 48))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

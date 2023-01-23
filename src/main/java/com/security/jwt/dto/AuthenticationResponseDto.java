@@ -1,5 +1,7 @@
 package com.security.jwt.dto;
 
+import java.util.Date;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,8 +18,18 @@ public class AuthenticationResponseDto {
 
     private String token;
 
-    public AuthenticationResponseDto(String token) {
+    private String refreshToken;
+
+    private Date expires_in;
+
+    public AuthenticationResponseDto(String token, String refreshToken, Date expires_in) {
         this.token = token;
+        this.refreshToken = refreshToken;
+        this.expires_in = expires_in;
     }
+
+
+
+   
     
 }

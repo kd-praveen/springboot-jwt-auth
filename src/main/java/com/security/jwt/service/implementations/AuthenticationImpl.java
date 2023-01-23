@@ -68,9 +68,13 @@ public class AuthenticationImpl implements AuthenticationService{
 
         // generate jwt token
         var jwtToken = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefreshToken(user);
+        var expirationTime = jwtService.extractExpireTime(jwtToken);
 
         return AuthenticationResponseDto.builder()
                 .token(jwtToken)
+                .refreshToken(refreshToken)
+                .expires_in(expirationTime)
                 .build();
     }
     
