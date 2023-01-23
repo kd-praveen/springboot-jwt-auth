@@ -20,12 +20,17 @@ public class SecurityConfiguration {
 
     private final AuthenticationProvider authenticationProvider;
 
+    private final AuthEntryPoint authEntryPoint;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
             .csrf()
             .disable()
+            .exceptionHandling()
+            .authenticationEntryPoint(authEntryPoint)
+            .and()
             .authorizeHttpRequests()
             .requestMatchers("/api/v1/auth/**")
             .permitAll()
