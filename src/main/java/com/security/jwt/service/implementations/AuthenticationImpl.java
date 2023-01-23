@@ -1,7 +1,10 @@
 package com.security.jwt.service.implementations;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -9,6 +12,7 @@ import com.security.jwt.config.JwtService;
 import com.security.jwt.dto.AuthenticationRequestDto;
 import com.security.jwt.dto.AuthenticationResponseDto;
 import com.security.jwt.dto.RegisterRequestDto;
+import com.security.jwt.dto.RegisterResponseDto;
 import com.security.jwt.models.User;
 import com.security.jwt.models.Role;
 import com.security.jwt.repository.UserRepository;
@@ -29,9 +33,8 @@ public class AuthenticationImpl implements AuthenticationService{
     private final AuthenticationManager authenticationManager;
 
     @Override
-    public AuthenticationResponseDto register(RegisterRequestDto request) {
+    public RegisterResponseDto register(RegisterRequestDto request) {
 
-        System.out.println("Registering");
         var user = User.builder()
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
@@ -41,11 +44,11 @@ public class AuthenticationImpl implements AuthenticationService{
                 .build();
         repository.save(user);
 
-        // generate jwt token
-        var jwtToken = jwtService.generateToken(user);
-
-        return AuthenticationResponseDto.builder()
-                .token(jwtToken)
+        return RegisterResponseDto
+                .builder()
+                .firstname(user.getFirstname())
+                .lastname(user.getLastname())
+                .email(user.getEmail())
                 .build();
     }
 
@@ -61,7 +64,7 @@ public class AuthenticationImpl implements AuthenticationService{
         );
 
         var user = repository.findByEmail(request.getEmail())
-                    .orElseThrow();
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found", null));
 
         // generate jwt token
         var jwtToken = jwtService.generateToken(user);

@@ -11,6 +11,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AuthenticationResponseDto {
 
+    @Builder.Default
+    private String tokenType = "Bearer ";
+
     private String token;
+
+    public AuthenticationResponseDto(String token) {
+        this.token = token;
+    }
     
 }
