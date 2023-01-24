@@ -1,5 +1,8 @@
 package com.security.jwt.service.implementations;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,6 +21,9 @@ import com.security.jwt.models.Role;
 import com.security.jwt.repository.UserRepository;
 import com.security.jwt.service.AuthenticationService;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -66,7 +72,7 @@ public class AuthenticationImpl implements AuthenticationService{
         var user = repository.findByEmail(request.getEmail())
                     .orElseThrow(() -> new UsernameNotFoundException("User not found", null));
 
-        // generate jwt token
+        // generate jwt tokens
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
         var expirationTime = jwtService.extractExpireTime(jwtToken);
@@ -75,6 +81,18 @@ public class AuthenticationImpl implements AuthenticationService{
                 .token(jwtToken)
                 .refreshToken(refreshToken)
                 .expires_in(expirationTime)
+                .build();
+    }
+
+    @Override
+    public AuthenticationResponseDto refreshToken(HttpServletRequest request) {
+        final String authHeader = request.getHeader("Authorization");
+        // var expirationTime = jwtService.extractExpireTime(authHeader);
+
+        return AuthenticationResponseDto.builder()
+                .token(authHeader)
+                .refreshToken(authHeader)
+                // .expires_in(expirationTime)
                 .build();
     }
     
