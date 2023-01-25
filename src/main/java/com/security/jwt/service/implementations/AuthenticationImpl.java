@@ -1,20 +1,13 @@
 package com.security.jwt.service.implementations;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
-import org.apache.tomcat.util.json.TokenMgrError;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
 
 import com.security.jwt.config.JwtService;
@@ -27,8 +20,6 @@ import com.security.jwt.models.Role;
 import com.security.jwt.repository.UserRepository;
 import com.security.jwt.service.AuthenticationService;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 

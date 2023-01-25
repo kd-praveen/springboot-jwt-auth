@@ -10,15 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.security.jwt.dto.AuthenticationRequestDto;
 import com.security.jwt.dto.AuthenticationResponseDto;
-import com.security.jwt.dto.JwtTokenRefreshRequestDto;
 import com.security.jwt.dto.RegisterRequestDto;
-import com.security.jwt.dto.RegisterResponseDto;
-import com.security.jwt.models.User;
 import com.security.jwt.repository.UserRepository;
 import com.security.jwt.service.AuthenticationService;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @RestController
