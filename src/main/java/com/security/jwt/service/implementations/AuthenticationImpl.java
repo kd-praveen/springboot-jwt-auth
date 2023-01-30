@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -61,26 +62,31 @@ public class AuthenticationImpl implements AuthenticationService{
     public AuthenticationResponseDto authenticate(AuthenticationRequestDto request) {
         
         // validate user credentials
-        authenticationManager.authenticate(
+        Authentication auth =  authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
                 request.getEmail(),
                 request.getPassword()
             )
         );
 
-        var user = repository.findByEmail(request.getEmail())
+        if(auth.isAuthenticated()){
+            var user = repository.findByEmail(request.getEmail())
                     .orElseThrow(() -> new UsernameNotFoundException("User not found", null));
 
-        // generate jwt tokens
-        var jwtToken = jwtService.generateToken(user);
-        var refreshToken = jwtService.generateRefreshToken(user);
-        var expirationTime = jwtService.extractExpireTime(jwtToken);
+            // generate jwt tokens
+            var jwtToken = jwtService.generateToken(user);
+            var refreshToken = jwtService.generateRefreshToken(user);
+            var expirationTime = jwtService.extractExpireTime(jwtToken);
 
-        return AuthenticationResponseDto.builder()
-                .token(jwtToken)
-                .refreshToken(refreshToken)
-                .expires_in(expirationTime)
-                .build();
+            return AuthenticationResponseDto.builder()
+                    .token(jwtToken)
+                    .refreshToken(refreshToken)
+                    .expires_in(expirationTime)
+                    .build();
+        } else {
+            throw new UsernameNotFoundException("User not found");
+        }
+        
     }
 
     @Override
