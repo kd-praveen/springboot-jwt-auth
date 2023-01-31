@@ -1,7 +1,5 @@
 package com.security.jwt.service.implementations;
 
-import java.util.Date;
-
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,7 +20,6 @@ import com.security.jwt.models.Role;
 import com.security.jwt.repository.UserRepository;
 import com.security.jwt.service.AuthenticationService;
 
-import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
@@ -78,12 +75,10 @@ public class AuthenticationImpl implements AuthenticationService{
             // generate jwt tokens
             var jwtToken = jwtService.generateToken(user);
             var refreshToken = jwtService.generateRefreshToken(user);
-            var expirationTime = jwtService.extractExpireTime(jwtToken);
 
             return AuthenticationResponseDto.builder()
                     .token(jwtToken)
                     .refreshToken(refreshToken)
-                    .expires_in(expirationTime)
                     .build();
         } else {
             throw new UsernameNotFoundException("Bad credentials");
@@ -96,7 +91,6 @@ public class AuthenticationImpl implements AuthenticationService{
         String authHeader = request.getHeader("Authorization");
         String refreshToken = "";
         String jwtToken = "";
-        Date expirationTime = new Date();
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             throw new JwtTokenExpiredException("Invalid JWT signature");
@@ -114,12 +108,11 @@ public class AuthenticationImpl implements AuthenticationService{
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
     
                 if (jwtService.isTokenValid(refreshToken, userDetails)) {
-                // generate jwt tokens
-                jwtToken = jwtService.generateToken(userDetails);
-                expirationTime = jwtService.extractExpireTime(jwtToken);
+                    // generate jwt tokens
+                    jwtToken = jwtService.generateToken(userDetails);
                     
                 } else {
-                    throw new ExpiredJwtException(null,null, "Your token has expired or invalidated. Please login again to generate a new one.");
+                    throw new JwtTokenExpiredException("Your token has expired or invalidated. Please login again to generate a new one.");
                 }
             }
         } else {
@@ -129,7 +122,6 @@ public class AuthenticationImpl implements AuthenticationService{
         return AuthenticationResponseDto.builder()
                 .token(jwtToken)
                 .refreshToken(refreshToken)
-                .expires_in(expirationTime)
                 .build();
     }
     

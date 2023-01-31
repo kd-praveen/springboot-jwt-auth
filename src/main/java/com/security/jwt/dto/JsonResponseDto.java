@@ -1,11 +1,9 @@
-package com.security.jwt.exceptions;
-
-import java.util.Date;
+package com.security.jwt.dto;
 
 import lombok.Data;
 
 @Data
-public class ErrorObject {
+public class JsonResponseDto {
     private Integer statusCode;
     private String message;
 }

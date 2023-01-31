@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.security.jwt.dto.AuthenticationRequestDto;
 import com.security.jwt.dto.AuthenticationResponseDto;
+import com.security.jwt.dto.JsonResponseDto;
 import com.security.jwt.dto.RegisterRequestDto;
 import com.security.jwt.repository.UserRepository;
 import com.security.jwt.service.AuthenticationService;
@@ -28,16 +29,24 @@ public class AuthenticationController {
 
     @PostMapping("register")
     @ResponseBody
-    public ResponseEntity<String> register(
+    public ResponseEntity<JsonResponseDto> register(
             @RequestBody RegisterRequestDto requestDto
     ) {
         if(repository.existsByEmail(requestDto.getEmail())){
-            return new ResponseEntity<>("Email already exists !!", HttpStatus.BAD_REQUEST);
+            JsonResponseDto errorResponse = new JsonResponseDto();
+
+            errorResponse.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            errorResponse.setMessage("Email already exists !!");
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         }
 
         authService.register(requestDto);
 
-        return new ResponseEntity<>("User registered successfully...", HttpStatus.CREATED);
+        JsonResponseDto successResponse = new JsonResponseDto();
+
+        successResponse.setStatusCode(HttpStatus.CREATED.value());
+        successResponse.setMessage("User registered successfully...");
+        return new ResponseEntity<>(successResponse, HttpStatus.CREATED);
     }
 
     @PostMapping("authenticate")

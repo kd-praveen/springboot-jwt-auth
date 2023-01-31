@@ -20,12 +20,9 @@ public class AuthenticationResponseDto {
 
     private String refreshToken;
 
-    private Date expires_in;
-
-    public AuthenticationResponseDto(String token, String refreshToken, Date expires_in) {
+    public AuthenticationResponseDto(String token, String refreshToken) {
         this.token = token;
         this.refreshToken = refreshToken;
-        this.expires_in = expires_in;
     }
 
 
