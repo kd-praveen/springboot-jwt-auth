@@ -16,11 +16,13 @@ import com.security.jwt.dto.AuthenticationRequestDto;
 import com.security.jwt.dto.AuthenticationResponseDto;
 import com.security.jwt.dto.RegisterRequestDto;
 import com.security.jwt.dto.RegisterResponseDto;
+import com.security.jwt.exceptions.JwtTokenExpiredException;
 import com.security.jwt.models.User;
 import com.security.jwt.models.Role;
 import com.security.jwt.repository.UserRepository;
 import com.security.jwt.service.AuthenticationService;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
@@ -71,7 +73,7 @@ public class AuthenticationImpl implements AuthenticationService{
 
         if(auth.isAuthenticated()){
             var user = repository.findByEmail(request.getEmail())
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found", null));
+                    .orElseThrow(() -> new UsernameNotFoundException("Invalid username or password"));
 
             // generate jwt tokens
             var jwtToken = jwtService.generateToken(user);
@@ -84,7 +86,7 @@ public class AuthenticationImpl implements AuthenticationService{
                     .expires_in(expirationTime)
                     .build();
         } else {
-            throw new UsernameNotFoundException("User not found");
+            throw new UsernameNotFoundException("Bad credentials");
         }
         
     }
@@ -97,7 +99,7 @@ public class AuthenticationImpl implements AuthenticationService{
         Date expirationTime = new Date();
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            throw new IllegalArgumentException("Invalid JWT signature");
+            throw new JwtTokenExpiredException("Invalid JWT signature");
         }
 
         refreshToken = authHeader.substring(7);
@@ -116,10 +118,12 @@ public class AuthenticationImpl implements AuthenticationService{
                 jwtToken = jwtService.generateToken(userDetails);
                 expirationTime = jwtService.extractExpireTime(jwtToken);
                     
+                } else {
+                    throw new ExpiredJwtException(null,null, "Your token has expired or invalidated. Please login again to generate a new one.");
                 }
             }
         } else {
-            throw new IllegalArgumentException("Invalid JWT signature");
+            throw new JwtTokenExpiredException("Invalid JWT signature");
         }
         
         return AuthenticationResponseDto.builder()
