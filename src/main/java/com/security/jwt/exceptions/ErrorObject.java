@@ -1,7 +1,5 @@
 package com.security.jwt.exceptions;
 
-import java.util.Date;
-
 import lombok.Data;
 
 @Data
