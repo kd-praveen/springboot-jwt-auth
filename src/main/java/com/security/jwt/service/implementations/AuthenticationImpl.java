@@ -1,5 +1,7 @@
 package com.security.jwt.service.implementations;
 
+import java.util.Collections;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,6 +19,7 @@ import com.security.jwt.dto.RegisterResponseDto;
 import com.security.jwt.exceptions.JwtTokenExpiredException;
 import com.security.jwt.models.User;
 import com.security.jwt.models.Role;
+import com.security.jwt.repository.RoleRepository;
 import com.security.jwt.repository.UserRepository;
 import com.security.jwt.service.AuthenticationService;
 
@@ -29,6 +32,8 @@ public class AuthenticationImpl implements AuthenticationService{
     
     private final UserRepository repository;
 
+    private final RoleRepository roleRepository;
+
     private final PasswordEncoder passwordEncoder;
 
     private final JwtService jwtService;
@@ -40,12 +45,14 @@ public class AuthenticationImpl implements AuthenticationService{
     @Override
     public RegisterResponseDto register(RegisterRequestDto request) {
 
+        Role roles = roleRepository.findByName(request.getRole()).get();
+
         var user = User.builder()
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.USER)
+                .roles(Collections.singletonList(roles))
                 .build();
         repository.save(user);
 
