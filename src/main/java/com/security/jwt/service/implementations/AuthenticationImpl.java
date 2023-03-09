@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.security.jwt.config.CustomUserDetails;
 import com.security.jwt.config.JwtService;
 import com.security.jwt.dto.AuthenticationRequestDto;
 import com.security.jwt.dto.AuthenticationResponseDto;
@@ -76,7 +77,7 @@ public class AuthenticationImpl implements AuthenticationService{
         );
 
         if(auth.isAuthenticated()){
-            var user = repository.findByEmail(request.getEmail())
+            var user = repository.findByEmail(request.getEmail()).map(CustomUserDetails::new)
                     .orElseThrow(() -> new UsernameNotFoundException("Invalid username or password"));
 
             // generate jwt tokens

@@ -24,7 +24,7 @@ public class ApplicationConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         // lambda expression of loadUserByUsername
-        return username -> userRepository.findByEmail(username)
+        return username -> userRepository.findByEmail(username).map(CustomUserDetails::new)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
