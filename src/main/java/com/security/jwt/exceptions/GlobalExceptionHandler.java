@@ -17,7 +17,7 @@ public class GlobalExceptionHandler {
         errorObject.setStatusCode(HttpStatus.UNAUTHORIZED.value());
         errorObject.setMessage(ex.getMessage());
 
-        return new ResponseEntity<ErrorObject>(errorObject, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<ErrorObject>(errorObject, HttpStatus.UNAUTHORIZED);
     }
 
 }
